@@ -198,11 +198,11 @@ let inv = () => {
   const items = disk.inventory.filter(item => !item.isHidden);
 
   if (!items.length) {
-    println(`You don't have any items in your inventory.`);
+    println(`You have nothing in your pockets. Oh wait there's a hole.`);
     return;
   }
 
-  println(`You have the following items in your inventory:`);
+  println(`Your belongings:`);
   items.forEach(item => {
     println(`${bullet} ${getName(item.name)}`);
   });
@@ -232,9 +232,10 @@ let lookAt = (args) => {
   if (item) {
     // Look at an item.
     if (item.desc) {
+      println(item.img, 'img');
       println(item.desc);
     } else {
-      println(`You don\'t notice anything remarkable about it.`);
+      println(`You don't notice anything remarkable about it.`);
     }
 
     if (typeof(item.onLook) === 'function') {
@@ -298,7 +299,6 @@ let getExit = (dir, exits) => exits.find(exit =>
     ? exit.dir.includes(dir)
     : exit.dir === dir
 );
-
 // shortcuts for cardinal directions
 // (allows player to type e.g. 'go n')
 let shortcuts = {
@@ -311,7 +311,6 @@ let shortcuts = {
   se: 'southeast',
   sw: 'southwest',
 };
-
 // go the passed direction
 // string -> nothing
 let goDir = (dir) => {
@@ -360,10 +359,10 @@ let talk = () => {
   const characters = getCharactersInRoom(disk.roomId);
 
   // assume players wants to talk to the only character in the room
-  if (characters.length === 1) {
-    talkToOrAboutX('to', getName(characters[0].name));
-    return;
-  }
+  // if (characters.length === 1) {
+  //   talkToOrAboutX('to', getName(characters[0].name));
+  //   return;
+  // }
 
   // list characters in the room
   println(`You can talk TO someone or ABOUT some topic.`);
@@ -627,20 +626,40 @@ let chars = () => {
 
 // display help menu
 let help = () => {
-  const instructions = `The following commands are available:
-    LOOK:           'look at key'
-    TAKE:           'take book'
-    GO:             'go north'
-    USE:            'use door'
-    TALK:           'talk to mary'
-    ITEMS:          list items in the room
-    CHARS:          list characters in the room
-    INV:            list inventory items
+  const instructions = `
+  You've said it.
+  
+  __There's no point. Nobody's coming. Ever.__
+
+
+    Try typing the words in *BOLD CAPS*.
+    You can select and copy-paste suff.
+    Use arrow keys as well.
+
+    LOOK:           'look at --------': (at your pity mhahahahahahh)
+    TAKE:           'take -------': take that thing (DO IT)
+    GO:             'go ---------': go wherever but there isn't much (pick a direction)
+    USE:            'use ---------': use the thing (the particular one)
+    ITEMS:          list items you can see
+    INV:            'i': list of your pockets' contents
+    CHARS:          list of characters to talk to (DO NOt TRY TALKING TO YOURSELF)
+
+
+
     SAVE/LOAD:      save current game, or load a saved game (in memory)
     IMPORT/EXPORT:  save current game, or load a saved game (on disk)
-    HELP:   this help menu
+    HELP:           show all this stuff again
   `;
   println(instructions);
+};
+
+let everywhere = () => {
+  println(`Yes. Ocean is EVERYWHERE.`);
+};
+
+let start = () => {
+  println('You went outside');
+  enterRoom('island');
 };
 
 // handle say command with no args
@@ -692,6 +711,8 @@ let commands = [
     restore: load,
     export: exportSave,
     import: importSave,
+    everywhere,
+    start,
   },
   // one argument (e.g. "go north", "take book")
   {
@@ -744,7 +765,9 @@ let applyInput = (input) => {
     } else if (disk.conversation) {
       println(`Type the capitalized KEYWORD to select a topic.`);
     } else {
-      println(`Sorry, I didn't understand your input. For a list of available commands, type HELP.`);
+      println(`What. Try again. I think saying stuff out loud was a bad idea. 
+      
+      You can still say "**HELP**"`);
     }
   };
 
